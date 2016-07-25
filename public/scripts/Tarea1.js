@@ -5,12 +5,34 @@ var data = {"Users":[
 ]};
 
 var User = React.createClass({
+  deleteUser: function() {
+    var url = "http://e2c867cf.ngrok.io/user/remove/";
+    var user_id = this.props.user_id;
+    url = url.concat(user_id);
+    $.ajax({
+      type: 'GET',
+      url: url,
+      cache: false,
+      dataType: 'json',
+      success: function() {
+        alert("deleted");
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },
   render: function() {
     return (
-      <div className="input-container">
-        <h3 id={this.props.user_id}>{this.props.children}</h3>
+      <tbody>
+      <tr className="input-container">
+        <td id={this.props.user_id}>{this.props.user_id}</td>
+        <td> {this.props.children} </td>
+        <td> {this.props.password} </td>
+        <td> <button value="Delete" type="submit" onClick={this.deleteUser}>Delete</button> </td>
         <div className="bar"></div>
-      </div>
+      </tr>
+      </tbody>
     );
   }
 });
@@ -19,15 +41,22 @@ var UserList = React.createClass({
   render: function() {
     var UserNodes = this.props.data.map(function(user, i) {
       return (
-        <User user_id={user.User_id}>
+        <User user_id={user.User_id} password= {user.Password}>
           {user.Username}
         </User>
       );
     });
     return (
-      <div className="userList">
+      <table className="table">
+      <thead>
+          <tr>
+              <th data-field="id">ID</th>
+              <th data-field="name">Username</th>
+              <th data-field="pass">Password</th>
+          </tr>
+        </thead>
         {UserNodes}
-      </div>
+      </table>
     );
   }
 });
