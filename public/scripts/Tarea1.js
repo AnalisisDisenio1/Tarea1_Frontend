@@ -17,7 +17,7 @@ var User = React.createClass({
 
 var UserList = React.createClass({
   render: function() {
-    var UserNodes = this.props.data.Users.map(function(user, i) {
+    var UserNodes = this.props.data.map(function(user, i) {
       return (
         <User user_id={user.User_id}>
           {user.Username}
@@ -34,10 +34,11 @@ var UserList = React.createClass({
 
 var Card = React.createClass({
   getInitialState: function() {
-    return {data: {"Users":[]}};
+    return {data: []};
   },
   loadUsersFromServer: function() {
     $.ajax({
+      type: 'GET',
       url: this.props.url,
       dataType: 'json',
       cache: false,
@@ -61,6 +62,7 @@ var Card = React.createClass({
             <h1 className="title">{this.props.title}</h1>
             <UserList data={this.state.data}/>
         </div>
+
       </div>
     );
   }
@@ -68,7 +70,7 @@ var Card = React.createClass({
 
 var UserForm = React.createClass({
   getInitialState: function() {
-    return {username: '',password: ''};
+    return {user_id: undefined, username: '',password: ''};
   },
   handleUsernameChange: function(e) {
     this.setState({username: e.target.value});
@@ -76,19 +78,41 @@ var UserForm = React.createClass({
   handlePasswordChange: function(e) {
     this.setState({password: e.target.value});
   },
+  handleUser_idChange: function(e) {
+    this.setState({user_id: e.target.value})
+  },
   handleSubmit: function(e) {
     e.preventDefault();
     var username = this.state.username.trim();
     var password = this.state.password.trim();
+    var user_id = this.state.user_id;
     if (!username || !password) {
       return;
     }
-    this.props.onUserSubmit({username: username, password: password});
-    this.setState({username: '', password: ''});
+    if(user_id == undefined) {
+      this.props.onUserSubmit({username: username, password: password});
+    }
+    else {
+      user_id = parseInt(this.state.user_id.trim());
+      this.props.onUserSubmit({user_id: user_id, username: username, password: password});
+      alert(user_id + " "+ username + " "+ password);
+    }
+    this.setState({user_id: undefined, username: '', password: ''});
   },
   render: function() {
     return (
       <form onSubmit={this.handleSubmit}>
+        <div className="input-container">
+          <input
+            type="number"
+            id="User_id"
+            name="User_id"
+            value={this.state.User_id}
+            onChange={this.handleUser_idChange}
+          />
+          <label htmlFor="User_id">ID</label>
+          <div className="bar"></div>
+        </div>
         <div className="input-container">
           <input
             type="text"
@@ -150,11 +174,16 @@ var HidenCard = React.createClass({
 });
 
 ReactDOM.render(
-  <Card title="List Users" url="http://9f894de3.ngrok.io/users" pollInterval={40000}/>,
+  <Card title="List Users" url="http://e2c867cf.ngrok.io/users" pollInterval={40000}/>,
   document.getElementById('content')
 );
 
 ReactDOM.render(
-  <HidenCard title="Create" url="http://9f894de3.ngrok.io/user/save" pollInterval={40000}/>,
+  <HidenCard title="Create" url="http://e2c867cf.ngrok.io/user/save" pollInterval={40000}/>,
   document.getElementById('register')
+);
+
+ReactDOM.render(
+  <HidenCard title="Update" url="http://e2c867cf.ngrok.io/user/edit" pollInterval={40000}/>,
+  document.getElementById('update')
 );
