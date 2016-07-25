@@ -33,13 +33,33 @@ var UserList = React.createClass({
 });
 
 var Card = React.createClass({
+  getInitialState: function() {
+    return {data: []};
+  },
+  loadUsersFromServer: function() {
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      cache: false,
+      success: function(data) {
+        this.setState({data: data});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },
+  componentDidMount: function() {
+    this.loadUsersFromServer();
+    setInterval(this.loadUsersFromServer, this.props.pollInterval);
+  },
   render: function() {
     return (
       <div>
         <div className="card"></div>
         <div className="card">
             <h1 className="title">{this.props.title}</h1>
-            <UserList data={data}/>
+            <UserList data={this.state.data}/>
         </div>
       </div>
     );
@@ -47,6 +67,6 @@ var Card = React.createClass({
 });
 
 ReactDOM.render(
-  <Card title="List Users"/>,
+  <Card title="List Users" url="localhost:3000/users" pollInterval={100}/>,
   document.getElementById('content')
 );
