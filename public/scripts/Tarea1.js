@@ -1,8 +1,8 @@
-var data = [
-  {user_id: 1, username: "PeteHunt", password: "This is one comment"},
-  {user_id: 2, username: "JordanWalke", password: "This is *another* comment"},
-  {user_id: 3, username: "TrisPrior", password: "Divergent"}
-];
+var data = {"Users":[
+  {"User_id": 1, "Username": "PeteHunt", "Password": "This is one comment"},
+  {"User_id": 2, "Username": "JordanWalke", "Password": "This is *another* comment"},
+  {"User_id": 3, "Username": "TrisPrior", "Password": "Divergent"}
+]};
 
 var User = React.createClass({
   render: function() {
@@ -17,10 +17,10 @@ var User = React.createClass({
 
 var UserList = React.createClass({
   render: function() {
-    var UserNodes = this.props.data.map(function(user) {
+    var UserNodes = this.props.data.Users.map(function(user, i) {
       return (
-        <User user_id={user.user_id}>
-          {user.username}
+        <User user_id={user.User_id}>
+          {user.Username}
         </User>
       );
     });
@@ -34,7 +34,7 @@ var UserList = React.createClass({
 
 var Card = React.createClass({
   getInitialState: function() {
-    return {data: []};
+    return {data: {"Users":[]}};
   },
   loadUsersFromServer: function() {
     $.ajax({
@@ -67,6 +67,6 @@ var Card = React.createClass({
 });
 
 ReactDOM.render(
-  <Card title="List Users" url="localhost:3000/users" pollInterval={100}/>,
+  <Card title="List Users" url="http://localhost:3000/users" pollInterval={100}/>,
   document.getElementById('content')
 );
