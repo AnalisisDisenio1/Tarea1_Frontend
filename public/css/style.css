@@ -466,3 +466,6 @@ body {
     opacity: 0;
   }
 }
+.inputCreate {
+  display: none;
+}

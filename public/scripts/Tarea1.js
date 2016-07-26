@@ -131,7 +131,7 @@ var UserForm = React.createClass({
   render: function() {
     return (
       <form onSubmit={this.handleSubmit}>
-        <div className="input-container">
+        <div id={this.props.title} className={"input-container input" + this.props.title}>
           <input
             type="number"
             id="User_id"
@@ -195,7 +195,7 @@ var HidenCard = React.createClass({
         <div className="card"></div>
         <div className="card">
             <h1 className="title">{this.props.title}</h1>
-            <UserForm onUserSubmit={this.handleUserSubmit}/>
+            <UserForm onUserSubmit={this.handleUserSubmit} title={this.props.title}/>
         </div>
       </div>
     );
@@ -203,7 +203,7 @@ var HidenCard = React.createClass({
 });
 
 ReactDOM.render(
-  <Card title="List Users" url="http://e2c867cf.ngrok.io/users" pollInterval={40000}/>,
+  <Card title="List Users" url="http://e2c867cf.ngrok.io/users" pollInterval={1000}/>,
   document.getElementById('content')
 );
 
